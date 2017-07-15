@@ -1,6 +1,9 @@
 var NAMED_DIR = '/var/named/';
-console.info(`start script with config: \n NAMED_DIR :${NAMED_DIR} \n `);
-var domain = '6-edge-chat.facebook.com';
+var ETC_CONFIG_FILE_PATH = '/etc/named.conf';
+
+console.info(`start script with config: \n NAMED_DIR :${NAMED_DIR} \n ETC_CONFIG_FILE_PATH : ${ETC_CONFIG_FILE_PATH} `);
+//var domain = '6-edge-chat.facebook.com';
+var domain = 'www.singa.com';
 var ip = '10.10.10.10'
 console.info(`to update domain:${domain} to ip : ${ip}`);
 
@@ -51,10 +54,41 @@ if(mainDomainFileExiest){
 		modifiedFileLines.push(line);
 	});
 	if(!subDomainLineExiest ){
-		modifiedFileLines.push(`${subDomain}\t\A\t${ip}`);
+		modifiedFileLines.push(`${subDomain}\tA\t${ip}`);
 	}
 	console.info(`the modifed named file:`,modifiedFileLines);
 }else{
 	console.info(`main domain file not exiest , create one...`);
+	//update the etc config file
+	var etcConfigFileContent = fs.readFileSync(ETC_CONFIG_FILE_PATH,'ascii');
+	if(etcConfigFileContent.indexOf(mainDomain) >= 0){
+		console.error('there is error , no named file , but found domain in etc config file');
+		throw new Error();
+	}
+
+	var  fileTemplate = `$TTL 600
+	@       IN SOA  @ rname.invalid. (
+		                                        0       ; serial
+		                                        1D      ; refresh
+		                                        1H      ; retry
+		                                        1W      ; expire
+		                                        3H )    ; minimum
+	@       IN      NS      MiWiFi-R3-srv. 
+`;
+	var  fileContent = `${fileTemplate}\n${subDomain}\tA\t${ip}\n`;
+	if(subDomain == 'www'){
+		fileContent += `@\tA\t${ip}\n`;
+	}
+	console.info(`the new name file :\n${fileContent}`);
+	
+	//add lines to etc config file
+	etcConfigFileContent += 
+`\nzone "${mainDomain}" IN {
+	        type master;
+	        file "named.${mainDomain}";
+	        allow-update { none;};
+};`;
+
+	console.info('the modified etc conifg file',etcConfigFileContent);
 }
 
