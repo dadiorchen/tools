@@ -1,10 +1,40 @@
 var NAMED_DIR = '/var/named/';
 var ETC_CONFIG_FILE_PATH = '/etc/named.conf';
+var command = require('./command.js');
+var MODE = {
+	TEST : 'TEST',
+	RUN : 'RUN',
+}
 
 console.info(`start script with config: \n NAMED_DIR :${NAMED_DIR} \n ETC_CONFIG_FILE_PATH : ${ETC_CONFIG_FILE_PATH} `);
 //var domain = '6-edge-chat.facebook.com';
-var domain = 'www.singa.com';
-var ip = '10.10.10.10'
+//load command
+
+
+var mode;
+var domain;
+var args = process && process.argv && process.argv.slice(2);
+if(args){
+	if(args.length == 2 && args[0] === 'domainTest'){
+		mode = MODE.TEST;
+		domain = args[1];
+	}else if(args.length == 2 && args[0] === 'domain'){
+		mode = MODE.RUN;
+		domain = args[1];
+	}
+}
+if(!mode || !domain){
+	throw new Error('usage : node updateDns.js (domain|domainTest) www.xxx.com');
+}
+
+//get ip
+var ip = command.getTokyoIp(domain);
+console.log(`get tokyo ip of ${domain} : ${ip}`);
+if(!/^\d+\.\d+\.\d+\.\d+$/g.test(ip)){
+	throw new Error(`wrong ip :${ip}`);
+}
+
+
 console.info(`to update domain:${domain} to ip : ${ip}`);
 
 var indexOfMainDomain = domain.lastIndexOf('.',domain.lastIndexOf('.')-1);
