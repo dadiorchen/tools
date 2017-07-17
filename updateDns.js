@@ -43,10 +43,6 @@ if(domain.lastIndexOf('.') <= 0){
 	throw new Error();
 }
 var indexOfMainDomain = domain.lastIndexOf('.',domain.lastIndexOf('.')-1);
-var subDomain = '';
-if(indexOfMainDomain <= 0){
-	subDomain = 'nowww';
-}
 var mainDomain = domain.substring(indexOfMainDomain + 1);
 console.info(`parse the mainDomain :${mainDomain}`);
 //check the main domain
@@ -55,7 +51,12 @@ if(!/^((?!\.).)+\.((?!\.).)+$/g.test(mainDomain)){
 	throw new Error();
 }
 
-subDomain = domain.substring(0,indexOfMainDomain);
+var subDomain = '';
+if(indexOfMainDomain <= 0){
+	subDomain = '@';
+}else{
+	subDomain = domain.substring(0,indexOfMainDomain);
+}
 console.info(`parse the sub domain :${subDomain}`);
 
 var fs = require('fs');
@@ -81,7 +82,7 @@ if(mainDomainFileExiest){
 	var subDomainLineExiest = false;
 	var modifiedFileLines = [];
 	namedfileLines = namedFileLines.map(function(line){
-		if(subDomain === 'nowww'){
+		if(subDomain === '@'){
 			if(line.startsWith('@') && /^\S+\s+IN\s+A\s+\d+\.\d+\.\d+\.\d+$/g.test(line)){ 
 				subDomainLineExiest = true;
 				line = `@\tIN\tA\t${ip}`;
@@ -122,13 +123,13 @@ if(mainDomainFileExiest){
 	}
 
 	var  fileTemplate = `$TTL 600
-	@       IN SOA  @ rname.invalid. (
+@       IN SOA  @ rname.invalid. (
 		                                        0       ; serial
 		                                        1D      ; refresh
 		                                        1H      ; retry
 		                                        1W      ; expire
 		                                        3H )    ; minimum
-	@       IN      NS      MiWiFi-R3-srv. 
+@       IN      NS      MiWiFi-R3-srv. 
 `;
 	var  fileContent = `${fileTemplate}\n${subDomain}\tIN\tA\t${ip}\n`;
 	if(subDomain == 'www' || subDomain === 'nowww'){
