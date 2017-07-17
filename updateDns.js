@@ -5,6 +5,7 @@ var MODE = {
 	TEST : 'TEST',
 	RUN : 'RUN',
 }
+var fs = require('fs');
 
 console.info(`start script with config: \n NAMED_DIR :${NAMED_DIR} \n ETC_CONFIG_FILE_PATH : ${ETC_CONFIG_FILE_PATH} `);
 //var domain = '6-edge-chat.facebook.com';
@@ -37,10 +38,14 @@ if(!/^\d+\.\d+\.\d+\.\d+$/g.test(ip)){
 
 console.info(`to update domain:${domain} to ip : ${ip}`);
 
-var indexOfMainDomain = domain.lastIndexOf('.',domain.lastIndexOf('.')-1);
-if(indexOfMainDomain <= 0){
+if(domain.lastIndexOf('.') <= 0){
 	console.error(`get error index of main domain :${indexOfMainDomain} `);
 	throw new Error();
+}
+var indexOfMainDomain = domain.lastIndexOf('.',domain.lastIndexOf('.')-1);
+var subDomain = '';
+if(indexOfMainDomain <= 0){
+	subDomain = 'nowww';
 }
 var mainDomain = domain.substring(indexOfMainDomain + 1);
 console.info(`parse the mainDomain :${mainDomain}`);
@@ -50,11 +55,11 @@ if(!/^((?!\.).)+\.((?!\.).)+$/g.test(mainDomain)){
 	throw new Error();
 }
 
-var subDomain = domain.substring(0,indexOfMainDomain);
+subDomain = domain.substring(0,indexOfMainDomain);
 console.info(`parse the sub domain :${subDomain}`);
 
 var fs = require('fs');
-var dirs = fs.readdirSync('/var/named/');
+var dirs = fs.readdirSync(NAMED_DIR);
 console.info('dir of named :',dirs);
 
 //check if the domain file already exist
@@ -76,17 +81,37 @@ if(mainDomainFileExiest){
 	var subDomainLineExiest = false;
 	var modifiedFileLines = [];
 	namedfileLines = namedFileLines.map(function(line){
-		if(line.startsWith(subDomain) && /^\S+\s+A\s+\d+\.\d+\.\d+\.\d+$/g.test(line)){
+		if(subDomain === 'nowww'){
+			if(line.startsWith('@') && /^\S+\s+IN\s+A\s+\d+\.\d+\.\d+\.\d+$/g.test(line)){ 
+				subDomainLineExiest = true;
+				line = `@\tIN\tA\t${ip}`;
+			}
+		}else if(subDomain === 'www'){
+			if(line.startsWith('@') && /^\S+\s+IN\s+A\s+\d+\.\d+\.\d+\.\d+$/g.test(line)){ 
+				subDomainLineExiest = true;
+				line = `@\tIN\tA\t${ip}`;
+			}else if(line.startsWith('www') && /^\S+\s+IN\s+A\s+\d+\.\d+\.\d+\.\d+$/g.test(line)){ 
+				subDomainLineExiest = true;
+				line = `www\tIN\tA\t${ip}`;
+			}
+		}else if(line.startsWith(subDomain) && /^\S+\s+IN\s+A\s+\d+\.\d+\.\d+\.\d+$/g.test(line)){
 			console.info(`the sub doman line exiest! , update it : ${line}`);
 			subDomainLineExiest = true;
-			line = `${subDomain}\tA\t${ip}`;
+			line = `${subDomain}\tIN\tA\t${ip}`;
 		}
 		modifiedFileLines.push(line);
 	});
 	if(!subDomainLineExiest ){
-		modifiedFileLines.push(`${subDomain}\tA\t${ip}`);
+		modifiedFileLines.push(`${subDomain}\tIN\tA\t${ip}`);
 	}
+	modifiedFileLines.push('');
 	console.info(`the modifed named file:`,modifiedFileLines);
+	if(mode === MODE.RUN){
+		console.info(`first , backup the origin named config file`);
+		command.backupFile(NAMED_DIR + mainDomainFileName);
+		console.info(`then , overwrite (write) named config file`);
+		fs.writeFileSync(NAMED_DIR + mainDomainFileName,modifiedFileLines.join('\n'));
+	}
 }else{
 	console.info(`main domain file not exiest , create one...`);
 	//update the etc config file
@@ -105,9 +130,9 @@ if(mainDomainFileExiest){
 		                                        3H )    ; minimum
 	@       IN      NS      MiWiFi-R3-srv. 
 `;
-	var  fileContent = `${fileTemplate}\n${subDomain}\tA\t${ip}\n`;
-	if(subDomain == 'www'){
-		fileContent += `@\tA\t${ip}\n`;
+	var  fileContent = `${fileTemplate}\n${subDomain}\tIN\tA\t${ip}\n`;
+	if(subDomain == 'www' || subDomain === 'nowww'){
+		fileContent += `@\tIN\tA\t${ip}\n`;
 	}
 	console.info(`the new name file :\n${fileContent}`);
 	
@@ -120,5 +145,27 @@ if(mainDomainFileExiest){
 };`;
 
 	console.info('the modified etc conifg file',etcConfigFileContent);
+	if(mode === MODE.RUN){
+		console.info(`first , backup the origin etc config file`);
+		command.backupFile(ETC_CONFIG_FILE_PATH);
+		console.info(`then , wirte new date to etc file`);
+		fs.writeFileSync(ETC_CONFIG_FILE_PATH,etcConfigFileContent);
+		console.info(`then , create (write) a new named config file`);
+		fs.writeFileSync(NAMED_DIR + mainDomainFileName,fileContent);
+	}
 }
 
+if(mode === MODE.RUN){
+	console.log(`last ,restart named service`);
+	command.restartBind();
+}
+
+
+
+console.log(`${mode == MODE.TEST ? 'test mode,the status:':'run mode,finsihed update:'}
+the domain:	${domain}
+the ip:		${ip}
+mainDomainFileName : ${mainDomainFileName}
+mainDomainFileExiest : ${mainDomainFileExiest} (true:modify the exiest file;false:create a new one)
+subDomainLineExiest : ${subDomainLineExiest} (true: modify the same line in file;false:append a new line )
+`);
