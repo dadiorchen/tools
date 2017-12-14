@@ -1,0 +1,3 @@
+OK this project (directory ) is about couchDB backup and restore from the couchDB server
+* backup.sh backup the test/production database to tar.gz file
+* extractAndImportDB.sh  extract tar.gz file and convert it to fit the couchDB server ,then import it to test/production database
