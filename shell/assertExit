@@ -1,0 +1,9 @@
+#!/bin/bash
+# to test the exit return value :0,1, print the test result
+# usage: assertExit [exitValue]
+
+if [ "$1" == "0" ];then
+	echoColor green "OK,test passed!"
+else
+	echoColor red "ERROR,test failure!"
+fi
