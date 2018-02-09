@@ -1,0 +1,10 @@
+#!/bin/bash
+# a script to alert echo command , to print colorful echo conveniently 
+# usage echoColor green "some words"
+if [ "$1" == "green" ];then
+	echo -e "\033[32m $2 \033[0m" 
+elif [ "$1" == "red" ];then
+	echo -e "\033[31m $2 \033[0m" 
+else
+	echo $2
+fi

@@ -1,0 +1,8 @@
+#!/bin/bash
+cd /Users/deanchen/work/tools/shell
+RESULT=0
+./echoColor green "OK"
+assertExit $?
+./echoColor red "BAD"
+assertExit $?
+
