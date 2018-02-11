@@ -1,0 +1,2 @@
+to use all this shell command for a OS, just set the PATH to current directory
+like this:  export PATH=$PATH:/root/work/tools/shell
