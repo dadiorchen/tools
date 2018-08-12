@@ -31,16 +31,23 @@ round-trip min/avg/max/stddev = 0.044/0.044/0.044/0.000 ms
 		try{
 			//result	= child_process.execSync(`ping ${IP} -c 1 -t 3`)
 			//REVISE the -t is bad for aliyun 's ping cmd
-			result	= child_process.execSync(`ping ${IP} -c 1 `)
+			result	= child_process.execSync(`ping ${IP} -c 1 `).toString()
 		}catch(e){
 			log.error('%s:ping fail:%s',label,e)
 			return -1
 		}
 		//To analyses the result
 		log.debug('%s:get result:',label,result)
-		if(result.indexOf('0.0% packet loss') > 0 ){
+		
+		const matcherLoss	= result.match(/([0-9.]+)% packet loss/m)
+		if(matcherLoss){
+			const loss	= parseInt(matcherLoss[1])
+			if(loss === 100){
+				log.debug('%s:the packet loss',label)
+				return -1
+			}
 			log.debug('%s:sucess, extract the delay time')
-			const matcher	= result.toString().match(
+			const matcher	= result.match(
 				/min\/avg\/max\/\w+ = [0-9.]+\/([0-9.]+)\/[0-9.]+\/[0-9.]+ ms/m
 			)
 			if(matcher){
@@ -53,12 +60,10 @@ round-trip min/avg/max/stddev = 0.044/0.044/0.044/0.000 ms
 				const avg	= parseInt(avgString)
 				return avg
 			}else{
-				throw Error('impossible')
+				throw Error('impossible:' + result.toString())
 			}
-		}else if(result.indexOf('100.0% packet loss') > 0){
-			log.debug('%s:fail')
-			return -1
 		}else{
+			log.error('%s:impossible,%s',label,result)
 			throw Error('impossible')
 		}
 
