@@ -1,9 +1,9 @@
 //@flow
 /* The entry of monitor, the main function */
-import {MonitorScheduler}		from './MonitorScheduler.js'
-
-const loglevel	= require('loglevel')
+import * as loglevel	from 'loglevel'
 loglevel.setDefaultLevel('trace')
+const {MonitorScheduler}	= require('./MonitorScheduler.js')
+
 const log		= require('loglevel').getLogger('../model/monitorEntry.js')
 const label		= 'main'
 const usage		= 
