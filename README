@@ -1,3 +1,6 @@
 the description for directory
 * server_1				:all the tools for server No.1 , this is a CentOS 7 VM on my thinkpad computer  , by far , this machine is for captain's log app server : for both test and production environment 
 	* script			:all the script (shell script) for it	
+
+* monitor				: A new project, monitor server running status, statistic the data, maybe need a web app to offer UI
+
