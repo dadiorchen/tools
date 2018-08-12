@@ -41,7 +41,7 @@ round-trip min/avg/max/stddev = 0.044/0.044/0.044/0.000 ms
 		if(result.indexOf('0.0% packet loss') > 0 ){
 			log.debug('%s:sucess, extract the delay time')
 			const matcher	= result.toString().match(
-				/min\/avg\/max\/stddev = [0-9.]+\/([0-9.]+)\/[0-9.]+\/[0-9.]+ ms/m
+				/min\/avg\/max\/\w+ = [0-9.]+\/([0-9.]+)\/[0-9.]+\/[0-9.]+ ms/m
 			)
 			if(matcher){
 				log.trace('%s:get match : %o',label,matcher)
