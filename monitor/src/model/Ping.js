@@ -29,7 +29,9 @@ round-trip min/avg/max/stddev = 0.044/0.044/0.044/0.000 ms
 		log.debug('%s:',label)
 		let result
 		try{
-			result	= child_process.execSync(`ping ${IP} -c 1 -t 3`)
+			//result	= child_process.execSync(`ping ${IP} -c 1 -t 3`)
+			//REVISE the -t is bad for aliyun 's ping cmd
+			result	= child_process.execSync(`ping ${IP} -c 1 `)
 		}catch(e){
 			log.error('%s:ping fail:%s',label,e)
 			return -1
