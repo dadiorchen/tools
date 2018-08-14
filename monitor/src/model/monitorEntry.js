@@ -2,6 +2,7 @@
 /* The entry of monitor, the main function */
 import * as loglevel	from 'loglevel'
 loglevel.setDefaultLevel('trace')
+//Can not use import here, cuz if so, the loglevel can not set default log level
 const {MonitorScheduler}	= require('./MonitorScheduler.js')
 
 const log		= require('loglevel').getLogger('../model/monitorEntry.js')

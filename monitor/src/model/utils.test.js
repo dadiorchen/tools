@@ -1,6 +1,7 @@
 //@flow
 import * as utils		from './utils.js'
 const log		= require('loglevel').getLogger('../model/utils.test.js')
+log.setLevel('trace')
 let label
 
 describe('utils',() => {
@@ -22,7 +23,9 @@ describe('utils',() => {
 201808121536    52.194.22.113   312`.split('\n')
 		
 		const result	= utils.stat(lines)
-		//expect(result.min).toBeGreaterThan(0)
+		expect(result.min).toBe(201)
+		expect(result.max).toBe(520)
+		log.debug('%s:the result:%o',label,result)
 
 
 		//}}}

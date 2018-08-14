@@ -16,8 +16,8 @@ export const stat	= (lines : Array<string>) : {
 	const label		= 'utils -> stat'
 	log.debug('%s:',label)
 	const result	= {
-		min		: 0,
-		max		: Number.POSITIVE_INFINITY,
+		min		: Number.POSITIVE_INFINITY,
+		max		: Number.NEGATIVE_INFINITY,
 		avg		: 0,
 		lost	: 0,
 		IP		: '',
