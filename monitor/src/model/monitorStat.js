@@ -28,7 +28,12 @@ if(name !== 'logFile'){
 
 log.debug('%s:to read file:%s',label,value)
 
+const filePath	= value
+if(!fs.existsSync(filePath)){
+	throw Error('file do not exist:'+filePath)
+}
 const linesFile	= fs.readFileSync(value).toString().split('\n')
+log.debug('%s:read file lines:%d',label,linesFile.length)
 
 const result	= utils.stat(linesFile)
-//BACK : to print the result of stat, then test the script
+log.info('%s:the result of stat:%o',label,result)

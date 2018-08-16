@@ -11,6 +11,8 @@ export const stat	= (lines : Array<string>) : {
 	avg		: number,
 	lost	: number,
 	IP		: string,
+	/* The total lines/points for the stat */
+	count	: number,
 }=>{
 	//{{{
 	const label		= 'utils -> stat'
@@ -21,10 +23,10 @@ export const stat	= (lines : Array<string>) : {
 		avg		: 0,
 		lost	: 0,
 		IP		: '',
+		count	: 0,
+		countFail	: 0,
 	}
 	let total	= 0
-	let count	= 0
-	let countFail	= 0
 	//201808121536    52.194.22.113   317
 	lines.forEach(line => {
 		//test
@@ -37,7 +39,7 @@ export const stat	= (lines : Array<string>) : {
 			result.IP		= IPString
 			const delay		= parseInt(delayString)
 			if(delay < 0){
-				countFail++
+				result.countFail++
 			}else{
 				total	+= delay
 				if(result.min > delay){
@@ -47,13 +49,13 @@ export const stat	= (lines : Array<string>) : {
 					result.max	= delay
 				}
 			}
-			count++
+			result.count++
 		}else{
 			throw new Error(`${label}:the line is bad:${line}`)
 		}
 	})
-	result.avg	= total / count
-	result.lost	= countFail / count
+	result.avg	= total / (result.count - result.countFail)
+	result.lost	= result.countFail / result.count
 
 	return result
 	//}}}
