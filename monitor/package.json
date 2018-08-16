@@ -19,6 +19,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "monitor": "babel-node ./src/model/monitorEntry.js"
+    "monitor": "babel-node ./src/model/monitorEntry.js",
+	"deploy"	: "babel-node ./src/deploy/main.js"
   }
 }
