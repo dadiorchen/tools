@@ -30,6 +30,10 @@ export const stat	= (lines : Array<string>) : {
 	//201808121536    52.194.22.113   317
 	lines.forEach(line => {
 		//test
+		if(/^\s*$/.test(line)){
+			log.debug('%s:skip empty line',label)
+			return
+		}
 		const matcher	= line.match(/^(\d{12})\s+(\d+\.+\d+\.\d+\.\d+)\s+([0-9-]{1,})$/)
 		if(matcher){
 			log.trace('%s:the line matched,%o',label,matcher)

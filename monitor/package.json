@@ -20,6 +20,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "monitor": "babel-node ./src/model/monitorEntry.js",
+	"stat"	: "babel-node ./src/model/monitorStat.js",
 	"deploy"	: "babel-node ./src/deploy/main.js"
   }
 }
