@@ -1,56 +1,50 @@
 #!/bin/bash
-#
-# Export a list of CouchDB databases from the server to JSON files.
-# Then bundle the exported files into a tar archive.
-# usage:
-# ./backup.sh mode=[test|production]
+#New version of backup script, just call couchdb-dump to backup db
+#backup target :
+#	* account
+#	* dean 
+#	* help
 
-
-#first , check the argument of command
-echo $1
-isTest="true"
-if [ $1 == "mode=test" ];then
-	echo "TEST"
-	isTest="true"
-elif [ $1 == "mode=production" ];then
-	echo "PRODUCTION"
-	isTest="false"
-else
-	echo "do not set the mode,usage: mode=test | mode=production "
-	exit 1;
-fi
-
-echo "begin..."
-echo "isTest:$isTest"
- 
+#Prepare the ENV
+BACKUP_DIR="/data/backup/production.new"
 TIMESTAMP=$(date "+%Y%m%d-%H%M%S")
-# Adjust the location as appropriate.
 SERVER="127.0.0.1"
 PORT="5984"
-if [ $isTest == "true" ];then
-	BACKUP_DIR="/data/backup/test"
-	DATABASES=("test");
-else
-	BACKUP_DIR="/data/backup/production"
-	DATABASES=("account" "note-u-062c50f0-8ee6-11e8-b592-ed316bcdccd5" "note-u-224e8f40-8eec-11e8-b592-ed316bcdccd5");
-fi
-mkdir -p $BACKUP_DIR
-TAR_FILE="${BACKUP_DIR}/couch-backup-${TIMESTAMP}.tar.gz"
+DATABASES=("account" "note-u-062c50f0-8ee6-11e8-b592-ed316bcdccd5" "note-u-224e8f40-8eec-11e8-b592-ed316bcdccd5");
+DATABASE_USER=midinoteAdmin
+DATABASE_PASSWORD=Discuit1145
+echo "begin..."
+echo "setting: backup dir:${BACKUP_DIR};server:${SERVER};port:${PORT};db user:${DATABASE_USER};password:${DATABASE_PASSWORD};"
 
- 
-FILES=""
 for DATABASE in ${DATABASES[@]}; do
-	echo "deal with ${DATABASE}"
-	FILE="/tmp/${DATABASE}.json"
-
-	curl -X GET \
-		http://${SERVER}:${PORT}/${DATABASE}/_all_docs?include_docs=true \
-		> ${FILE}
-	# Build a list of the files to add to the archive.
-	FILES="${FILES} ${FILE}"
-	echo "FILES : ${FILES}"
+	CMD="bash /home/ec2-user/code/couchdb-dump/couchdb-backup.sh -b -H ${SERVER} -d ${DATABASE}  -f ${BACKUP_DIR}/${DATABASE}.${TIMESTAMP}.json -u ${DATABASE_USER} -p ${DATABASE_PASSWORD}"
+	echo ${CMD}
+	`${CMD}`
 done
- 
-# Tar and gzip the exported files.
-echo "backup data to file:${TAR_FILE};"
-tar -zcf ${TAR_FILE} ${FILES}
+echo "Done!" 
+## Adjust the location as appropriate.
+#if [ $isTest == "true" ];then
+#	DATABASES=("test");
+#else
+#	BACKUP_DIR="/data/backup/production"
+#fi
+#mkdir -p $BACKUP_DIR
+#TAR_FILE="${BACKUP_DIR}/couch-backup-${TIMESTAMP}.tar.gz"
+#
+# 
+#FILES=""
+#for DATABASE in ${DATABASES[@]}; do
+#	echo "deal with ${DATABASE}"
+#	FILE="/tmp/${DATABASE}.json"
+#
+#	curl -X GET \
+#		http://${SERVER}:${PORT}/${DATABASE}/_all_docs?include_docs=true \
+#		> ${FILE}
+#	# Build a list of the files to add to the archive.
+#	FILES="${FILES} ${FILE}"
+#	echo "FILES : ${FILES}"
+#done
+# 
+## Tar and gzip the exported files.
+#echo "backup data to file:${TAR_FILE};"
+#tar -zcf ${TAR_FILE} ${FILES}
