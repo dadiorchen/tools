@@ -1,0 +1,26 @@
+{
+  "name": "monitor",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "react-scripts": "1.1.4"
+  },
+  "dependencies": {
+    "loglevel": "^1.6.1",
+    "moment": "^2.22.2",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "monitor": "babel-node ./src/model/monitorEntry.js",
+	"stat"	: "babel-node ./src/model/monitorStat.js",
+	"deploy"	: "babel-node ./src/deploy/main.js"
+  }
+}
