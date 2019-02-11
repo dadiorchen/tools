@@ -1,5 +1,5 @@
 " command of read template
-command! TemplateReactComponent r! sed -n 2,26p ~/work/tools/vim/templates.js
+command! TemplateReactComponent r! sed -n 2,47p ~/work/tools/vim/templates.js
 
 
 

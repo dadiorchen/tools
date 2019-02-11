@@ -1,15 +1,21 @@
 //template for react component
 //@flow
-import React 		from 'react'
+import React		from 'react'
+import {compose}		from 'redux'
+import {connect}		from 'react-redux'
 
-const log			= require('loglevel').getLogger(INPUT)
+import {Factory}		from '../factory.js'
+import {summerConnect}		from '../summer/summerConnect.js'
+import {type StateType}		from '../model/store.js'
+
+const log	= require('loglevel').getLogger('../component/MindmapContextMenu.js')
 
 
 type Props	= {
 }
 type State	= {
 }
-export class MyComponent extends React.Component<Props,State>{
+export class MindmapContextMenu extends React.Component<Props,State>{
 	/********************** properties ************/
 	constructor( props : Props){
 		super(props);
@@ -25,5 +31,17 @@ export class MyComponent extends React.Component<Props,State>{
 	}
 }
 
-
-
+export const MindmapContextMenuConnected		= compose(
+	connect(
+		(state : StateType) => {
+			return {
+			}
+		}
+	),
+	summerConnect(
+		(factory : Factory) => {
+			return {
+			}
+		}
+	)
+)(MindmapContextMenu)

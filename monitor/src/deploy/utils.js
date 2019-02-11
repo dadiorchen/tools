@@ -127,14 +127,14 @@ export async function deployToServer(
 	const stdout	= child_process.execSync(cmdTar,{cwd:cmdTarCD})
 	log.info('%s:result of tar:%s',label,stdout)
 
-	log.info('%s:to backup the projection dir on the server',label)
-
-	const timestamp	= moment().format('YYYYMMDDHHmm')
-	const cmdBackup	= `ssh -i ~/.ssh/deanchen.pem ec2-user@${IPServer} tar -czf /home/ec2-user/code/build.backup.tar.gz.${timestamp} /home/ec2-user/code/build`
-	log.info('%s:to backup on server with cmd:%s',label,cmdBackup)
-	const stdoutBackup	= child_process.execSync(cmdBackup)
-	log.info('%s:stdout backup:%s',label,stdoutBackup)
-	log.info('%s:backup finished',label)
+//CLOSE, cuz server space is small, backup file will run out all the space of disk 
+//	log.info('%s:to backup the projection dir on the server',label)
+//	const timestamp	= moment().format('YYYYMMDDHHmm')
+//	const cmdBackup	= `ssh -i ~/.ssh/deanchen.pem ec2-user@${IPServer} tar -czf /home/ec2-user/code/build.backup.tar.gz.${timestamp} /home/ec2-user/code/build`
+//	log.info('%s:to backup on server with cmd:%s',label,cmdBackup)
+//	const stdoutBackup	= child_process.execSync(cmdBackup)
+//	log.info('%s:stdout backup:%s',label,stdoutBackup)
+//	log.info('%s:backup finished',label)
 
 	//to upload
 	const cmdScp	= `scp ${projectPath}/build.tar.gz ec2-user@${IPServer}:/home/ec2-user/code/`
