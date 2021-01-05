@@ -23,10 +23,8 @@ utils.test()
 /* Check the arguments, it is :
     * projectPath	: string
 	* IPServer	: IP
-	* API_HOST	: string
-	* API_PORT	: string
-	* COUCHDB_HOST_B		: string,
-	* COUCHDB_PORT		: string,
+	* API_URL	: string
+	* COUCHDB_URL		: string,
 	* COUCHDB_USER_NAME	: string,
 	* COUCHDB_USER_PASSWORD		: string,
 */
@@ -44,10 +42,8 @@ log.info('%s:invoke to deploy',label)
 utils.deployToServer(
 	argsMap['projectPath'],
 	argsMap['IPServer'],
-	argsMap['API_HOST'],
-	argsMap['API_PORT'],
-	argsMap['COUCHDB_HOST_B'],
-	argsMap['COUCHDB_PORT'],
+	argsMap['API_URL'],
+	argsMap['COUCHDB_URL'],
 	argsMap['COUCHDB_USER_NAME'],
 	argsMap['COUCHDB_USER_PASSWORD'],
 )

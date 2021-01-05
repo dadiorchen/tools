@@ -16,10 +16,8 @@ export async function deployToServer(
 	projectPath		: string,
 	/* The server to deploy */
 	IPServer	: string,
-	API_HOST	: string,
-	API_PORT	: string,
-	COUCHDB_HOST_B		: string,
-	COUCHDB_PORT		: string,
+	API_URL	: string,
+	COUCHDB_URL		: string,
 	COUCHDB_USER_NAME	: string,
 	COUCHDB_USER_PASSWORD		: string,
 ) : Promise<boolean>{
@@ -38,24 +36,15 @@ export async function deployToServer(
 		throw Error('wrong IPServer')
 	}
 	//the api host must be IP
-	if(!/^\d+\.\d+\.\d+\.\d+$/.test(API_HOST)){
-		log.error('%s:the API_HOST is bad:%s',label,API_HOST)
+	//if(!/^(http:\/\/)?(https:\/\/)?\w+$/.test(API_HOST)){
+	if(!/^http.*$/.test(API_URL)){
+		log.error('%s:the API_URL is bad:%s',label,API_URL)
 		throw Error('wrong API_HOST')
 	}
-	//the api port is number
-	if(!/^\d+$/.test(API_PORT)){
-		log.error('%s:the API_PORT is bad:%s',label,API_PORT)
-		throw Error('wrong API_PORT')
-	}
 	//the couch db host
-	if(!/^\d+\.\d+\.\d+\.\d+$/.test(COUCHDB_HOST_B)){
-		log.error('%s:the COUCHDB_HOST_B is bad:%s',label,COUCHDB_HOST_B)
-		throw Error('wrong COUCHDB_HOST_B')
-	}
-	//couch port
-	if(!/^\d+$/.test(COUCHDB_PORT  )){
-		log.error('%s:the COUCHDB_PORT is bad:%s',label,COUCHDB_PORT)
-		throw Error('wrong COUCHDB_PORT')
+	if(!/^http.*$/.test(COUCHDB_URL)){
+		log.error('%s:the COUCHDB_URL is bad:%s',label,COUCHDB_URL)
+		throw Error('wrong COUCHDB_URL')
 	}
 	//couch user name
 	if(!COUCHDB_USER_NAME || !COUCHDB_USER_PASSWORD){
@@ -70,12 +59,11 @@ export async function deployToServer(
 	
 	const ok	= await new Promise((resolve,reject) => {
 		const cmd	= 
-			`REACT_APP_API_HOST=${API_HOST} ` + 
-			`REACT_APP_API_PORT=${API_PORT} ` + 
-			`REACT_APP_COUCHDB_HOST_B=${COUCHDB_HOST_B} ` + 
-			`REACT_APP_COUCHDB_PORT=${COUCHDB_PORT} ` + 
+			`REACT_APP_API_URL=${API_URL} ` + 
+			`REACT_APP_COUCHDB_URL=${COUCHDB_URL} ` + 
 			`REACT_APP_COUCHDB_USER_NAME=${COUCHDB_USER_NAME} ` + 
 			`REACT_APP_COUCHDB_USER_PASSWORD=${COUCHDB_USER_PASSWORD} ` + 
+			`REACT_APP_VISIT_STATE=true ` + 
 			'npm run build'
 		log.debug('%s:the cmd to build:%s',label,cmd)
 		const process	= child_process.exec(

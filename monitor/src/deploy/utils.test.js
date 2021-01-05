@@ -43,10 +43,8 @@ describe('utils',() => {
 			'main.js',
 			'projectPath=/usr/local',
 			'IPServer=1',
-			'API_HOST=2',
-			'API_PORT=3',
-			'COUCHDB_HOST_B=4',
-			'COUCHDB_PORT=5',
+			'API_URL=2',
+			'COUCHDB_URL=3',
 			'COUCHDB_USER_NAME=username',
 			'COUCHDB_USER_PASSWORD=123456',
 		]
@@ -56,8 +54,6 @@ describe('utils',() => {
 			'1',
 			'2',
 			'3',
-			'4',
-			'5',
 			'username',
 			'123456'
 		)
