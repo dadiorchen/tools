@@ -2,9 +2,11 @@
 /* The cmd to stat the ping record log file */
 import * as loglevel	from 'loglevel'
 import fs		from 'fs'
+console.trace	= console.debug
 loglevel.setDefaultLevel('trace')
 
 const log		= require('loglevel').getLogger('../model/monitorStat.js')
+log.setLevel('trace')
 const utils		= require('./utils.js')
 const label		= 'main'
 const usage		= `USAGE:
@@ -37,3 +39,4 @@ log.debug('%s:read file lines:%d',label,linesFile.length)
 
 const result	= utils.stat(linesFile)
 log.info('%s:the result of stat:%o',label,result)
+log.warn('%s:the result of stat:%o',label,result)
