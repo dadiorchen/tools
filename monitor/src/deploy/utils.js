@@ -64,6 +64,7 @@ export async function deployToServer(
 			`REACT_APP_COUCHDB_USER_NAME=${COUCHDB_USER_NAME} ` + 
 			`REACT_APP_COUCHDB_USER_PASSWORD=${COUCHDB_USER_PASSWORD} ` + 
 			`REACT_APP_VISIT_STATE=true ` + 
+			`GENERATE_SOURCEMAP=false ` + 
 			'npm run build'
 		log.debug('%s:the cmd to build:%s',label,cmd)
 		const process	= child_process.exec(
